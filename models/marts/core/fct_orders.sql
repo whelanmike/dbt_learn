@@ -15,7 +15,8 @@ with orders as
              ,pay.dollar_amount
              ,sum(
                   case when ord.status = 'completed' 
-                       then pay.dollar_amount end)  
+                       then pay.dollar_amount 
+                            else 0 end)  
                                     as completed_dollar_amount
         from  orders                ord 
               inner join payments   pay on ord.order_id = pay.order_id

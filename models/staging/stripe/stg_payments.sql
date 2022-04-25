@@ -7,7 +7,7 @@ with payments as (
           ,status           as payment_status
           ,amount / 100     as dollar_amount
           ,created          as created_date
-    from `lunar-tube-130217`.dbt_learn.stripe_payments
+    from {{ source ('dbt_learn', 'payments') }}
 )
 
 select * from payments
