@@ -18,15 +18,13 @@ models:
         description: Timestamp when data was landed in Warehouse via ETL.
         
   - name: stg_orders
+    description: Table of items ordered by customers.
     columns: 
       - name: order_id
         description: Primary Key for stg_orders table.
         tests:
           - unique
           - not_null          
-      - name: customer_id
-        description: Customer ID linked to the oprder.
-        description: ID of customer placing order. References customer table.
       - name: order_date
         description: Date on which Customer placed the order.
       - name: status
@@ -35,6 +33,7 @@ models:
           - accepted_values:
               values: ['placed', 'shipped', 'completed', 'returned', 'return_pending']
       - name: customer_id
+        description: ID of customer placing order. References customer table.
         tests:
           - relationships:
               to: ref('stg_customers')  # Note -- references stg_customers i.e. the model file name
@@ -42,7 +41,9 @@ models:
               config:
                 severity: error
                 warn_if: ">=0"  # Test Warning! (will always warn)
+                
   - name: stg_payments
+    description: Payment details linked to an "order id"
     columns: 
       - name: payment_id
         description: Primary Key for payments table.

@@ -1,3 +1,9 @@
+## Markdown Tables of definitions for 
+1. order_status in stg_orders table
+2. payment_method in stg_payments table
+3. --
+
+
 {% docs order_status %}
 
 One of the following status values.
