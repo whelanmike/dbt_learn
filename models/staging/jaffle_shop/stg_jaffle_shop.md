@@ -12,9 +12,10 @@ One of the following status values.
 
 {% enddocs %}
 
+---
+---
 
-
-{% docs payment_method %}
+{% docs payment_method_in_md_file %}
 
 The following are valid payment methods.
 

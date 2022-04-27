@@ -4,7 +4,7 @@ sources:
   - name: dbt_learn
     description: Mockup Shop Project to learn dbt Data Engineering Workflow.
     database: lunar-tube-130217
-    schema: dbt_learn
+    schema: dbt_learn                         # Dataset in BigQuery
     tables: 
       - name: customers                       # This is how I'm going to reference this table from here on within the project.
         description: Raw customer data from source system.
