@@ -2,30 +2,47 @@ version: 2
 
 sources:
   - name: dbt_learn
-    description: Mockup Shop Project to learn dbt Data Engineering Workflow
+    description: Mockup Shop Project to learn dbt Data Engineering Workflow.
     database: lunar-tube-130217
     schema: dbt_learn
     tables: 
-      - name: customers
+      - name: customers                       # This is how I'm going to reference this table from here on within the project.
         description: Raw customer data from source system.
-        identifier: jaffle_shop_customers
+        identifier: jaffle_shop_customers     # This is the table name in the DWH table.
         columns:
           - name: id 
             description: Primary Key for Customer.
             tests:
               - unique
               - not_null
+          - name: LOAD_DATE
+            description: Timestamp when data was landed in Warehouse [source].
+          - name: FIRST_NAME
+            description: Customer first name [source].
+          - name: LAST_NAME
+            description: Customer last name [source].
         loaded_at_field: LOAD_DATE 
         freshness:
           warn_after: { count: 12, period: hour }
           error_after: { count: 36, period: hour}
+
       - name: orders
         description: Raw order data from source system.
         identifier: jaffle_shop_orders
+        columns:
+          - name: ID 
+            description: Primary Key for order.
+          - name: USER_ID
+            description: User ID of Customer (ref customer table)
+          - name: ORDER_DATE
+            description: Date when order was placed.
+          - name: STATUS
+            description: Status of order e.g (complete, returned, ...)
         loaded_at_field: LOAD_DATE 
         freshness:
           warn_after: { count: 12, period: hour }
           error_after: { count: 24, period: hour}
+
       - name: payments                # dbt alias for the actual table name
         description: Raw customer payment data from source system.
         identifier: stripe_payments   # Actual source table name
@@ -33,3 +50,18 @@ sources:
         freshness:
           warn_after: { count: 12, period: hour }
           error_after: { count: 24, period: hour}
+        columns:
+          - name: id 
+            description: Primary Key for payments data.
+          - name: ORDERID
+            description: The order ID associated with this particular payment.
+          - name: PAYMENTMETHOD
+            description: Customer payment method e.g. Credid Card, PayPal, BitCoin...
+          - name: STATUS
+            description: Payment state e.g. Successful, Declined, Insufficient Funds, etc.
+          - name: AMOUNT
+            description: Payment Amount in cent (USD currency)
+          - name: CREATED
+            description: DATE on which the payment was created. (Does not imply cleared payment)
+          - name: LOAD_DATE
+            description: ETL DATE when table was loaded.

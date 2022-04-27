@@ -2,24 +2,58 @@ version: 2
 
 models:
   - name: stg_customers
+    description: Unique Customer per row.
     columns: 
       - name: customer_id
+        description: Primary Key for stg_customers
         tests:
           - unique
           - not_null
-
+      - name: first_name 
+        description: Customer First Name
+      - name: last_name
+        description: Customer Last Name.
+      - name: LOAD_DATE
+        type: TIMESTAMP
+        description: Timestamp when data was landed in Warehouse via ETL.
+        
   - name: stg_orders
     columns: 
       - name: order_id
+        description: Primary Key for stg_orders table.
         tests:
           - unique
           - not_null          
+      - name: customer_id
+        description: Customer ID linked to the oprder.
+        description: ID of customer placing order. References customer table.
+      - name: order_date
+        description: Date on which Customer placed the order.
       - name: status
+        description: '{{ doc ("order_status") }}'   # Note we reference NOT the .md file, but the %doc ref therein. 
         tests:
           - accepted_values:
-              values:
-                - shipped
-                - completed
-                - return_pending
-                - returned
-                - placed
+              values: ['placed', 'shipped', 'completed', 'returned', 'return_pending']
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')  # Note -- references stg_customers i.e. the model file name
+              field: customer_id
+              config:
+                severity: error
+                warn_if: ">=0"  # Test Warning! (will always warn)
+  - name: stg_payments
+    columns: 
+      - name: payment_id
+        description: Primary Key for payments table.
+      - name: order_id
+        description: Customer Order ID associated with payment. 
+      - name: payment_method
+        description: '{{ doc ("payment_method") }}'
+      - name: payment_status
+        description: Indicates payment transaction state, e.g. cleared, rejected, pending, 
+      - name: dollar_amount
+        description: Order Amount in USD
+      - name: created_date
+        description: Payment Creation Date.
+
